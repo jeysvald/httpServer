@@ -1,6 +1,8 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.MessageInfo;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -13,34 +15,46 @@ public class Network {
         this.urlString = urlString;
     }
 
-    private String sendToBase(String urlString, String method) {
+    public String sendToBase(String urlString, String method) {
+        return sendToBase(urlString,method,null);
+    }
+
+    public String sendToBase(String urlString, String method, String body) {
         URL url;
         HttpURLConnection connection = null;
         while (true) {
             try {
                 url = new URL(urlString);
                 connection = (HttpURLConnection) url.openConnection();
+                if (!"GET".equals(method) && body != null && !body.equals("")) {
+                    connection.setDoOutput(true);
+                }
                 connection.setRequestMethod(method);
                 connection.setDoInput(true);
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestProperty("Accept", "application/json");
+
+                if (connection.getDoOutput()) {
+                    OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
+                    if (body != null){
+                        wr.write(body);
+                    }
+                    wr.flush();
+                }
                 if (connection.getInputStream() != null) {
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String data = br.readLine();//FIXME: read all lines
-                    //System.out.println("OK!");
                     ok++;
-                    //System.out.println("ok: " + ok + " notOk: " +notOk);
                     return data;
                 } else {
                     ok++;
-                    //System.out.println("ok: " + ok + " notOk: " +notOk);
                     return null;
                 }
             } catch (IOException e) {
+                e.printStackTrace();
                 System.out.println("NOT OK!");
                 notOk++;
                 System.out.println("ok: " + ok + " notOk: " +notOk);
-                //e.printStackTrace();
             } finally {
                 if (connection != null) {
                     connection.disconnect();
@@ -53,18 +67,17 @@ public class Network {
                 }
             }
         }
-//        try {
-//            Thread.currentThread().wait(200);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        //System.out.println("OK!");
-        //return null;
     }
 
-    public MessageInfo getMessage(int number) {
+    public MessageInfo getMessage(int number, String login, String password) {
         ObjectMapper mapper = new ObjectMapper();
-        String jsonString = sendToBase(urlString + "/getMessages/" + number, "GET");
+        JsonObject jsonobj = Json.createObjectBuilder()
+                .add("number", number)
+                .add("login", login)
+                .add("password", password)
+                .build();
+
+        String jsonString = sendToBase(urlString + "/getMessage", "POST", jsonobj.toString());
         MessageInfo toReturn = null;
         if (jsonString == null) {
             return null;
@@ -77,7 +90,27 @@ public class Network {
         return toReturn;
     }
 
-    public void addMessage(String name, String message) {
-        sendToBase(urlString + "/postMessage/" + name + "/" + message, "POST");
+    public void addMessage(String login, String password, String message) {
+        if ("".equals(message)) {
+            return;
+        }
+        JsonObject jsonObj = Json.createObjectBuilder()
+                .add("login", login)
+                .add("password", password)
+                .add("message", message)
+                .build();
+        sendToBase(urlString + "/addMessage", "POST",jsonObj.toString());
+    }
+
+    public boolean signIn(String login, String password) {
+        JsonObject jsonObj = Json.createObjectBuilder()
+                .add("login", login)
+                .add("password", password)
+                .build();
+        String result = sendToBase(urlString + "/signIn", "POST",jsonObj.toString());
+        if("true".equals(result)) {//исправить
+            return true;
+        }
+        return false;
     }
 }

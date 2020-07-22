@@ -10,5 +10,6 @@
     <orderEntry type="library" name="com.liferay:com.fasterxml.jackson.databind:2.10.0.LIFERAY-PATCHED-1" level="project" />
     <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-core:2.10.0" level="project" />
     <orderEntry type="library" name="com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.10.0" level="project" />
+    <orderEntry type="library" name="org.glassfish:javax.json:1.1.4" level="project" />
   </component>
 </module>

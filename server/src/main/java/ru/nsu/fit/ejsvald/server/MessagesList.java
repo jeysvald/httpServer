@@ -10,9 +10,14 @@ public class MessagesList {
     public MessagesList() {
         messages = new ArrayList<>();
     }
-    public void add(String name, String message) {
+    public void addMessage(String name, String message) {
         messages.add(name + ": " + message);
     }
+
+    public void addInfo(String info) {
+        messages.add(info);
+    }
+
     public MessageInfo getFrom(int n) {
         StringBuilder sb = new StringBuilder();
         for (int i = n; i < messages.size(); i++) {
@@ -21,4 +26,6 @@ public class MessagesList {
         }
         return new MessageInfo(messages.size(), sb.toString());
     }
+
+
 }
