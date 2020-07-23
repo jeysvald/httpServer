@@ -3,10 +3,12 @@ import data.MessageInfo;
 public class Listener implements Runnable {
     private String login;
     private String password;
+
     public Listener(String login, String password) {
         this.login = login;
         this.password = password;
     }
+
     @Override
     public void run() {
         Network server = new Network("http://localhost:8080");

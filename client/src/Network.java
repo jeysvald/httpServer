@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class Network {
+
     private final String urlString;
     private int ok;
     private int notOk;
@@ -71,13 +72,12 @@ public class Network {
 
     public MessageInfo getMessage(int number, String login, String password) {
         ObjectMapper mapper = new ObjectMapper();
-        JsonObject jsonobj = Json.createObjectBuilder()
+        JsonObject jsonObj = Json.createObjectBuilder()
                 .add("number", number)
                 .add("login", login)
                 .add("password", password)
                 .build();
-
-        String jsonString = sendToBase(urlString + "/getMessage", "POST", jsonobj.toString());
+        String jsonString = sendToBase(urlString + "/getMessage", "POST", jsonObj.toString());
         MessageInfo toReturn = null;
         if (jsonString == null) {
             return null;
@@ -91,7 +91,7 @@ public class Network {
     }
 
     public void addMessage(String login, String password, String message) {
-        if ("".equals(message)) {
+        if (message.isEmpty()) { //тут я мог сломать логику кода
             return;
         }
         JsonObject jsonObj = Json.createObjectBuilder()
@@ -99,7 +99,7 @@ public class Network {
                 .add("password", password)
                 .add("message", message)
                 .build();
-        sendToBase(urlString + "/addMessage", "POST",jsonObj.toString());
+        sendToBase(urlString + "/addMessage", "POST", jsonObj.toString());
     }
 
     public boolean signIn(String login, String password) {
@@ -107,7 +107,7 @@ public class Network {
                 .add("login", login)
                 .add("password", password)
                 .build();
-        String result = sendToBase(urlString + "/signIn", "POST",jsonObj.toString());
+        String result = sendToBase(urlString + "/signIn", "POST", jsonObj.toString());
         if("true".equals(result)) {//исправить
             return true;
         }
