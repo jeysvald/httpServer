@@ -1,5 +1,7 @@
 package ru.nsu.fit.ejsvald.server;
 
+//import anatoly.crypto.library.MD5;
+
 public class UsersDB {
     public boolean isLoginExist(String login) {
         //TODO: проверка что пользователь с таким логином уже существует

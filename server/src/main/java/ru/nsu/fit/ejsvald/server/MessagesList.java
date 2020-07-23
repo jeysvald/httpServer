@@ -7,9 +7,11 @@ import java.util.List;
 
 public class MessagesList {
     List<String> messages;
+
     public MessagesList() {
-        messages = new ArrayList<>();
+        messages = new ArrayList<>(); ///может обычный лист юзать?
     }
+
     public void addMessage(String name, String message) {
         messages.add(name + ": " + message);
     }
