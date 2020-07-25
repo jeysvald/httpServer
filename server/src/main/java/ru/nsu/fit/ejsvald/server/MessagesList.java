@@ -6,25 +6,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesList {
-    List<String> messages;
+
+    private ArrayList<StringBuilder> messagesForUsers;
+
     public MessagesList() {
-        messages = new ArrayList<>();
-    }
-    public void addMessage(String name, String message) {
-        messages.add(name + ": " + message);
+        messagesForUsers = new ArrayList<>();
     }
 
-    public void addInfo(String info) {
-        messages.add(info);
+    public void addMessage(int ID,String name, String message) {
+        messagesForUsers.get(ID)
+                .append(ID) ///добавляем ID для распределния сообщений пользователь/ чат + пользователь
+                .append("&")
+                .append(name)
+                .append(": ")
+                .append(message)
+                .append(System.lineSeparator());///согласен(раньше я все это конкатенировал)
     }
 
-    public MessageInfo getFrom(int n) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = n; i < messages.size(); i++) {
-            sb.append(messages.get(i));
-            sb.append(System.lineSeparator());
-        }
-        return new MessageInfo(messages.size(), sb.toString());
+//    public void addInfo(String info) { //что оно делает?
+//        messagesForUsers.add(info);
+//    }
+
+    public MessageInfo getMessagesForID(int ID) { ///getFrom
+        MessageInfo toReturn = new MessageInfo(messagesForUsers.get(ID).length(), messagesForUsers.get(ID).toString());
+        messagesForUsers.get(ID).setLength(0); ///хз что делает ПРЕД строка
+        return toReturn;
     }
 
 

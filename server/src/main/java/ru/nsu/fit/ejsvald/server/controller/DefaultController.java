@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.nsu.fit.ejsvald.server.MessagesList;
-import ru.nsu.fit.ejsvald.server.UsersDB;
+import ru.nsu.fit.ejsvald.server.ServerDatabase;
 import ru.nsu.fit.ejsvald.server.data.MessageInfo;
 import ru.nsu.fit.ejsvald.server.utils.JsonParser;
 
@@ -16,7 +16,7 @@ import javax.json.JsonObject;
 public class DefaultController {
 
     private final MessagesList messagesList = new MessagesList();
-    private final UsersDB usersDB = new UsersDB();
+    private final ServerDatabase usersDB = new ServerDatabase();
 
     @RequestMapping(value = "/getMessage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             headers = "Accept=application/json")
@@ -28,7 +28,7 @@ public class DefaultController {
         boolean hasLoggedIn = usersDB.authentication(login, password);
         if (hasLoggedIn) {
             synchronized (messagesList) {
-                return messagesList.getFrom(num);
+                return messagesList.getMessagesForID(num);
             }
         }
         return new MessageInfo(num, "login error");
